@@ -13,6 +13,7 @@ const messagesZh = {
     average_rating: '平均评分',
     reviews: '评论',
     item_code: '产品编码',
+    product_name: '产品名称',
     qty: '个数',
     wholesale_prices: '批发价',
     add_to_cart: '加入购物车',

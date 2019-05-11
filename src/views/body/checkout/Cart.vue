@@ -19,7 +19,8 @@
                 </div>
             </div>
         
-            <div v-if="pageInitComplete && cart_products && cart_products.length > 0" class="product_page"  >        
+        
+            <div v-if="pageInitComplete && cart_products && isCartInfoNotEmpty(cart_products)" class="product_page"  >        
             
                 <div class="cart">
                     
@@ -29,43 +30,48 @@
                             &nbsp;
                             <label for="cart_select_all">{{ $t("message.select_all_product") }}</label>
                         </div>
-                        <div v-for="(productOne,index) in cart_products " class="row">
-                            <div class="col-33">
-                                <input @change="selectOne(index)" v-model="productOne.active" type="checkbox" name="cart_select_item" class="cart_select cart_select_item">
-                                <router-link :to="productOne.url" title="productOne.name"  class="product-image">
-                                    <img :src="productOne.img_url"   alt="productOne.name" width="75" height="75">
-                                </router-link>
+                        <div class="c-products" v-for="(cart_bdmin_products,bdminUserId) in cart_products " >
+                            <div style="margin-left:2%" class="bdmin_name">
+                                {{cart_info.bdmin[bdminUserId]}}
                             </div>
-                            <div class="col-66">
-                                <h2 class="product-name">
-                                    <router-link :to="productOne.url" title="productOne.name"  >
-                                        {{productOne.name}}
+                            <div v-for="(productOne,index) in cart_bdmin_products " class="row">
+                                <div class="col-33">
+                                    <input @change="selectOne(bdminUserId, index)" v-model="productOne.active" type="checkbox" name="cart_select_item" class="cart_select cart_select_item">
+                                    <router-link :to="productOne.url" title="productOne.name"  class="product-image">
+                                        <img :src="productOne.img_url"   alt="productOne.name" width="75" height="75">
                                     </router-link>
-                                </h2>
-                                
-                                <ul class="options" v-if="productOne.custom_option_info" >
-                                    <li v-for="(val,label) in productOne.custom_option_info">
-                                        {{label}}:{{val}} 
-                                    </li> 
-                                </ul>
-                                <div class="clear"></div>
-                                
-                                <span class="cart-price">
-                                    <span class="price">
-                                        {{currency.symbol}}
-                                        {{productOne.product_price}}
-                                    </span>                
-                                </span>
-                                <div class="cart_qty"> 
-                                    <a @click="updateInfo('less_one',productOne.item_id)" href="javascript:void(0)" class="cartqtydown changeitemqty" :rel="productOne.item_id" :num="productOne.qty">-</a>
-                                    <input v-model="productQty[productOne.item_id]" name="cart[qty]" size="4" title="Qty" class="input-text qty" :rel="productOne.item_id" maxlength="12" >
-                                    <a @click="updateInfo('add_one',productOne.item_id)" href="javascript:void(0)" class="cartqtyup changeitemqty" :rel="productOne.item_id" :num="productOne.qty">+</a>
-                                    <div class="clear"></div>
                                 </div>
-                                <a  @click="updateInfo('remove',productOne.item_id)" href="javascript:void(0)"  :rel="productOne.item_id" title="Remove item" class="btn-remove btn-remove2">
-                                    <span class="icon icon-remove">
+                                <div class="col-66">
+                                    <h2 class="product-name">
+                                        <router-link :to="productOne.url" title="productOne.name"  >
+                                            {{productOne.name}}
+                                        </router-link>
+                                    </h2>
+                                    
+                                    <ul class="options" v-if="productOne.custom_option_info" >
+                                        <li v-for="(val,label) in productOne.custom_option_info">
+                                            {{label}}:{{val}} 
+                                        </li> 
+                                    </ul>
+                                    <div class="clear"></div>
+                                    
+                                    <span class="cart-price">
+                                        <span class="price">
+                                            {{currency.symbol}}
+                                            {{productOne.product_price}}
+                                        </span>                
                                     </span>
-                                </a>
+                                    <div class="cart_qty"> 
+                                        <a @click="updateInfo('less_one',productOne.item_id)" href="javascript:void(0)" class="cartqtydown changeitemqty" :rel="productOne.item_id" :num="productOne.qty">-</a>
+                                        <input v-model="productQty[productOne.item_id]" name="cart[qty]" size="4" title="Qty" class="input-text qty" :rel="productOne.item_id" maxlength="12" >
+                                        <a @click="updateInfo('add_one',productOne.item_id)" href="javascript:void(0)" class="cartqtyup changeitemqty" :rel="productOne.item_id" :num="productOne.qty">+</a>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <a  @click="updateInfo('remove',productOne.item_id)" href="javascript:void(0)"  :rel="productOne.item_id" title="Remove item" class="btn-remove btn-remove2">
+                                        <span class="icon icon-remove">
+                                        </span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,7 +200,7 @@ export default {
             selectAllStatus: 0,
             errormsg:'',
             show_coupon: false,
-            cart_products:[],
+            cart_products:{},
             productQty:{},
             cart_info:{},
             pageInitComplete:false,
@@ -320,9 +326,10 @@ export default {
                 }
             });
         },
-        selectOne: function(index){
+        selectOne: function(bdminUserId, index){
+            
             var cp = this.cart_products;
-            var productOne = cp[index];
+            var productOne = cp[bdminUserId][index];
             var item_id = productOne.item_id;
             var active = productOne.active;
             var self = this;
@@ -330,6 +337,7 @@ export default {
             $.showIndicator();
             var url = self.selectOneUrl;
             active = active ? 1 : 0;
+            
             $.ajax({
                 url: url,
                 async: true,
@@ -408,13 +416,16 @@ export default {
         },
         initSelectAll: function(){
             var self = this;
-            var products = self.cart_products;
+            var cart_products = self.cart_products;
             // 检查各个select是否全部选择，如果全部选择，则 selectAllStatus = 1
             var selectAll = 1;
-            for(var x in products){
-                var productOne = products[x];
-                if (productOne['active'] != 1) {
-                    selectAll = 0;
+            for(var bdmin in cart_products){
+                var products = cart_products[bdmin];
+                for(var x in products){
+                    var productOne = products[x];
+                    if (productOne['active'] != 1) {
+                        selectAll = 0;
+                    }
                 }
             }
             self.selectAllStatus = selectAll;
@@ -440,16 +451,19 @@ export default {
                         var products = self.cart_products;
                         // 现在已经改成了服务端发送购物车数据，因此，购物车页面不再发送购物车数据。
                         // var traceCart = [];
+                        //console.log(products);
                         for(var x in products){
-                            var productOne = products[x];
-                            self.productQty[productOne.item_id] = productOne.qty;
-                            //  var traceProduct = {
-                            //      'sku': productOne.sku,
-                            //      'qty': productOne.qty,
-                            //      'price': productOne.base_product_price
-                            //  };
-                            //  traceCart.push(traceProduct)
+                            var productOnes = products[x];
+                            for(var productOneIndex in productOnes){
+                                var productOne = productOnes[productOneIndex];
+                                //console.log(productOne.item_id);
+                                //console.log(productOne.qty);
+                                self.productQty[productOne.item_id] = productOne.qty;
+                            }
                         }
+                        //console.log('self.productQty:');
+                        //console.log(self.productQty);
+                        
                         self.show_coupon = reponseData.data.show_coupon;
                         self.cart_info = reponseData.data.cart_info;
                         self.coupon_code = self.cart_info.coupon_code;
@@ -471,7 +485,7 @@ export default {
                     }
                     //console.log('cart_products.length:'+ self.cart_products.length);
                     self.pageInitComplete = true;
-                    
+                    console.log('pageInitComplete:'+ self.pageInitComplete);
                 },
                 error:function(){
                     $.hideIndicator();
@@ -539,8 +553,16 @@ export default {
                 }
             });
             
+        },
+        isCartInfoNotEmpty: function(obj){
+            for(var key in obj) {
+            
+                return true;
+            }
+            
+            return false;
         }
-    
+        
     
     }
     

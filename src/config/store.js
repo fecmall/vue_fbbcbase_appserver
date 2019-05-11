@@ -1,7 +1,7 @@
 export default {
     storeConfig:[
       {
-        'domain': 'enterprise.fancyecommerce.com',
+        'domain': 'vue.fecmall.com',
         'lang_code' : 'zh',
         'currency_code' : 'CNY'
       }

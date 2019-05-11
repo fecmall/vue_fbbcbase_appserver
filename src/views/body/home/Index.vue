@@ -35,7 +35,7 @@
           <div class="container">
             <div id="copy">
               {{ $t("message.copyright") }}&copy;2016:
-              <a href="http://www.meixiangzg.com">MeiXiangZG</a>.com
+              <a href="http://www.fecmall.com">FecMall</a>.com
               {{ $t("message.allright") }}:
             </div>
           </div>

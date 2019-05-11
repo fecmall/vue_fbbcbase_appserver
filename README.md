@@ -72,26 +72,16 @@ npm install --registry=https://registry.npm.taobao.org
 上面2个环境下的配置文件都可以看到下面的配置：
 
 ```
-API_ROOT: '"//fecshop.appserver.fancyecommerce.com"',
-WEBSITE_ROOT: '"//demo.fancyecommerce.com"'
+API_ROOT: '"http://bbc.appserver.fecmall.com"',
+WEBSITE_ROOT: '"http://vue.fecmall.com"',
 ```
 
 `API_ROOT`: 是fecshop server部分的api url，也就是fecshop的appserver入口, 作为vue后端数据提供者
 
 `WEBSITE_ROOT`: 这个是vue部分的域名，也就是访问vue的域名
 
-**下面，我们以本地开发环境为例子进行配置**
 
-您需要将这里改成您自己的域名，譬如：我的fecshop是docker配置的，
-fecshop appserver入口url为：appserver.fecshop.com，
-我打开配置文件`config/dev.env.js`，修改配置如下：
-
-```
-API_ROOT: '"//appserver.fecshop.com"',
-WEBSITE_ROOT: '"//localhost:8080"'
-```
-
-在运行vue端之前，你要保证`//appserver.fecshop.com` 已经配置好，否则无法获取后端数据
+在运行vue端之前，你要保证`bbc.appserver.fecmall.com` 已经配置好，否则无法获取后端数据
 
 
 5.3配置store
@@ -101,10 +91,9 @@ WEBSITE_ROOT: '"//localhost:8080"'
 可以看到
 
 ```
-
-'domain': 'demo.fancyecommerce.com',
+'domain': 'vue.fecmall.com',
 'lang_code' : 'zh',
-'currency_code' : 'EUR'
+'currency_code' : 'CNY'
 ```
 
 `domain`: 这个是vue访问的url地址，和上面的`WEBSITE_ROOT`部分设置成一样即可
@@ -113,20 +102,12 @@ WEBSITE_ROOT: '"//localhost:8080"'
 
 `currency_code`: 默认的货币
 
-因此，我们需要进行更改如下：
-
-```
-'domain': 'localhost:8080',
-'lang_code' : 'zh',
-'currency_code' : 'EUR'
-```
-
 
 5.3.2配置跨域
 
-如果你的vue和appserver域名不一样，那么存在ajax 跨域问题，需要设置cors，
+ajax 跨域问题，需要设置cors，
 打开fecshop的@appserver/config/fecshop_local_services/Helper.php文件,
-将`'Origin' => ['http://demo.fancyecommerce.com'],` 改成您自己的域名地址即可
+将`'Origin' => ['http://vue.fecmall.com'],` 改成您自己的域名地址即可
 ，详细参看帖子：http://www.fecshop.com/topic/1547
 
 5.4下面就可以执行了
@@ -139,7 +120,7 @@ WEBSITE_ROOT: '"//localhost:8080"'
 npm run dev
 ```
 
-执行成功后，访问`http://localhost:8080/#/` 即可访问
+执行成功后，访问`http://vue.fecmall.com/#/` 即可访问
 
 
 5.4.2生产环境执行，

@@ -55,10 +55,10 @@
                     
                 </div>
                 
-                <div class="onestepcheckout-column-right">
+                <div v-for="order_info in order_infos">
                     <div class="review_order_view">
                         <p class="onestepcheckout-numbers onestepcheckout-numbers-4">
-                            {{ $t("message.review_your_order") }}: {{order_info.increment_id}}
+                            {{ bdmin_info[order_info.bdmin_user_id] }}
                         </p>
                         <div class="onestepcheckout-summary">
                             <table class="onestepcheckout-summary">
@@ -154,22 +154,17 @@
                         </div>
 
                     </div>
-                    
-                    
-                    <div class="onestepcheckout-place-order">
-                        <a @click="orderPayment()" class="large orange onestepcheckout-button" href="javascript:void(0)" id="onestepcheckout-place-order">
-                            {{ $t("message.order_payment") }}
-                        </a>
-                        <div :style="'display:'+displaySubmitOrder" class="onestepcheckout-place-order-loading">
-                            <img src="//img.fancyecommerce.com/images/opc-ajax-loader.gif">&nbsp;&nbsp;
-                            Please wait, processing your order...
-                        </div>
-                    </div>
-                    
-                    
-                    
                 </div>
                 
+                <div class="onestepcheckout-place-order">
+                    <a @click="orderPayment()" class="large orange onestepcheckout-button" href="javascript:void(0)" id="onestepcheckout-place-order">
+                        {{ $t("message.order_payment") }}
+                    </a>
+                    <div :style="'display:'+displaySubmitOrder" class="onestepcheckout-place-order-loading">
+                        <img src="//img.fancyecommerce.com/images/opc-ajax-loader.gif">&nbsp;&nbsp;
+                        Please wait, processing your order...
+                    </div>
+                </div>
                 
             </div>
         </div>
@@ -189,7 +184,8 @@ export default {
             errormsg:'',
             payment_method:'',
             payments:'',
-            order_info: {},
+            bdmin_info: {},
+            order_infos: {},
             displaySubmitOrder:'none'
         }
     },
@@ -241,7 +237,9 @@ export default {
                     }else if(reponseData.code == 200){
                         self.payment_method = reponseData.data.current_payment_method;
                         self.payments = reponseData.data.payments;
-                        self.order_info = reponseData.data.order_info;
+                        self.order_infos = reponseData.data.order_infos;
+                        self.bdmin_info = reponseData.data.bdmin_info;
+                        console.log(self.payments);
                         console.log('payment info success');
                         
                     }else if(reponseData.code == 1500007){

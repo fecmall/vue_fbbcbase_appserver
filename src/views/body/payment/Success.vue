@@ -13,7 +13,7 @@
                 
                 <p>
                     {{ $t("message.your_order_is") }}
-                    : {{increment_id}}.</p>
+                    : {{increment_ids}}.</p>
                 <p>
                     {{ $t("message.receive_an_confirm_email") }}
                     
@@ -44,9 +44,9 @@ export default {
         return {
             pageInitUrl: root + '/payment/success' ,
             errormsg:'',
-            increment_id:'',
+            increment_ids:'',
             refer_url: '',
-            order:{}
+            orders:[]
         }
     },
     created: function(){
@@ -86,8 +86,8 @@ export default {
                 success:function(reponseData, textStatus,request){
                     $.hideIndicator();
                     if(reponseData.code == 200){
-                        self.increment_id = reponseData.data.increment_id;
-                        self.order = reponseData.data.order;
+                        self.increment_ids = reponseData.data.increment_ids;
+                        self.orders = reponseData.data.orders;
                         var traceData = {"refer_url": self.refer_url};
                         var routerQ = self.$route.query
                         for (var k in routerQ) {

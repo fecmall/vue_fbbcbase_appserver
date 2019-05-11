@@ -1257,9 +1257,26 @@ ul#billing_address_list  li input , ul#billing_address_list  li select{
     font-size:0.6rem;
 }
 
+.checkoutcontainer  .onestepcheckout-coupons {
+    padding: .5rem 1rem .5rem;
+    background: #fff;
+}
 
-
-
+.cart_info{
+    background: #eee;
+}
+.cart_select_div{
+    background: #fff;
+}
+.c-products{
+    margin: .2rem 0;
+    background: #fff;
+}
+.bdmin_name{
+    font-weight: bold;
+    margin: 0 0 .5rem;
+    padding-top: 0.5rem;
+}
 
 
 

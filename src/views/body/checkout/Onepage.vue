@@ -62,86 +62,23 @@
                             </div>
                         </div>
 
-                        <div class="onestepcheckout-column-middle">
-                            <div class="shipping_method_html">
-                                <div class="onestepcheckout-shipping-method">
-                                    <p class="onestepcheckout-numbers onestepcheckout-numbers-2">
-                                        {{ $t("message.shipping_method") }}
-                                    </p>
-                                    <div class="onestepcheckout-shipping-method-block">    
-                                        <dl class="shipment-methods">
-                                            
-                                            <div v-for="(shipping,index) in shippings" class="shippingmethods">
-                                                <div class="flatrate">
-                                                    {{shipping.label}}
-                                                </div>
-                                                <div>
-                                                    <input @change="changeShipping()" v-model="shipping_method"  data-role="none"  type="radio" :id="'s_method_flatrate_flatrate'+shipping.shipping_i" :value="shipping.method" class="validate-one-required-by-name" name="shipping_method">
-                                                    <label :for="'s_method_flatrate_flatrate'+shipping.shipping_i">{{shipping.name}}
-                                                        <strong>                 
-                                                            <span class="price">
-                                                                {{shipping.symbol}}
-                                                                {{shipping.cost}}
-                                                            </span>
-                                                        </strong>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                        </dl>
-                                    </div>
-                                </div>
-                            </div>
-                         
-                            <div v-if="show_coupon" class="onestepcheckout-coupons">
-                                <div style="display: none;" id="coupon-notice"></div>
-                                <div class="op_block_title">
-                                    {{ $t("message.coupon_codes") }}
-                                </div>
-                                <label for="id_couponcode">
-                                    {{ $t("message.enter_your_coupon_code") }}
-                                    
-                                </label>
-                                
-                                <input v-model="coupon_code" style="color:#777;" class="input-text" id="id_couponcode" name="coupon_code" >
-                                <br>
-                                <button @click="addCoupon()" style="" type="button" class="submitbutton add_coupon_submit" id="onestepcheckout-coupon-add">
-                                    {{couponLabel}}
-                                </button>
-                                <div class="clear"></div>
-                                <div class="coupon_add_log"></div>
-                            </div>
-                            
-                            <div class="onestepcheckout-remark">
-    							<div class="op_block_title">
-                                    <input type="checkbox"  id="write_remark" v-model="write_remark"   />
-                                    <label for="write_remark">{{ $t("message.order_remark") }}</label>
-                                </div> 
-    							<label v-if="write_remark">{{ $t("message.fill_order_remark") }}</label> 
-    							<textarea v-if="write_remark"  v-model="order_remark" class="order_remark" name="order_remark" style="width:94%;height:100px;padding:10px;"></textarea>
-    						</div>
-                        </div>
-
-                        <div class="onestepcheckout-column-right">
+                        <div v-for="(bdmin_cart_info, bdmin_user_id) in cart_info">
                             <div class="review_order_view">
-                                
-                                
-                                
                                 <p class="onestepcheckout-numbers onestepcheckout-numbers-4">
-                                    {{ $t("message.review_your_order") }}
+                                    {{ bdmin_info[bdmin_user_id] }}
                                 </p>
                                 <div class="onestepcheckout-summary">
                                     <table class="onestepcheckout-summary">
                                         <thead>
                                             <tr>
                                                 <th class="image"></th>
-                                                <th class="name">{{ $t("message.name") }}</th>
+                                                <th class="name">{{ $t("message.product_name") }}</th>
                                                 <th class="qty">{{ $t("message.qty") }}</th>
                                                 <th class="total">{{ $t("message.subtotal") }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="product in cart_info.products">
+                                            <tr v-for="product in bdmin_cart_info.products">
                                                 <td class='image'>
                                                     
                                                     <router-link :to="'/catalog/product/'+product.product_id" class="product-image" >
@@ -173,7 +110,7 @@
                                                     </span>
                                                 </td>
                                             </tr>
-                                            		
+                                                    
                                         </tbody>
                                     </table>
                                     <table class="onestepcheckout-totals">
@@ -185,20 +122,41 @@
                                                 <td class="value">
                                                     <span class="price">
                                                         {{currency_info.symbol}}
-                                                        {{cart_info.product_total}}
+                                                        {{bdmin_cart_info.product_total}}
                                                         
                                                     </span>       
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td >
-                                                    {{ $t("message.shipping_cost") }}
+                                                    {{ $t("message.shipping_method") }}
                                                 </td>
                                                 <td class="value">
-                                                    <span class="price">
-                                                        {{currency_info.symbol}}
-                                                        {{cart_info.shipping_cost}}
-                                                    </span> 
+                                                    <div>
+                                                        <span class="">
+                                                            {{bdmin_cart_info.shipping_method_label}}
+                                                        </span>
+                                                        <span class="icon icon-right" style="float:right;"></span>
+                                                        <span class="price" style="float:right;">
+                                                            
+                                                            {{bdmin_cart_info.shipping_cost}}
+                                                        </span> 
+                                                    </div>
+                                                    <div>
+                                                        <div v-for="(shipMethod, index) in bdmin_cart_info.shipping_methods" class="shippingmethods">
+                                                            <div>
+                                                                <input @change="changeShipping(bdmin_user_id, shipMethod.id)" v-model="bdmin_cart_info.shipping_method"  data-role="none"  type="radio" :id="'s_method_flatrate_flatrate'+shipMethod.id" :value="shipMethod.id" class="validate-one-required-by-name" :name=" 'shipping_method' + shipMethod.id ">
+                                                                <label :for="'s_method_flatrate_flatrate'+shipMethod.id">
+                                                                    {{shipMethod.label}} 
+                                                                    <strong>                 
+                                                                        <span class="price">
+                                                                            {{currency_info.symbol}}{{shipMethod.current_cost}}
+                                                                        </span>
+                                                                    </strong>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <tr v-if="show_coupon">
@@ -206,7 +164,7 @@
                                                     {{ $t("message.discount") }}
                                                 </td>
                                                 <td class="value">
-                                                    <span class="price">-{{currency_info.symbol}} {{cart_info.coupon_cost}}
+                                                    <span class="price">-{{currency_info.symbol}} {{bdmin_cart_info.coupon_cost}}
                                                     </span> 
                                                 </td>
                                             </tr>
@@ -215,14 +173,22 @@
                                                     {{ $t("message.grand_total") }}
                                                 </td>
                                                 <td class="value">
-                                                    <span class="price">{{currency_info.symbol}}{{cart_info.grand_total}}
+                                                    <span class="price">{{currency_info.symbol}}{{bdmin_cart_info.grand_total}}
                                                     </span>   
                                                 </td>
                                             </tr>						
                                         </tbody>
                                     </table>
                                 </div>
-
+                            </div>
+                            
+                            
+                        </div>
+                        
+                            
+                        <div class="onestepcheckout-column-right">
+                            <div style="    padding: .8rem 1rem .2rem;font-size: 0.6rem; background: #fff;margin: .2rem 0 0;">
+                                共： {{all_count}}个，合计：{{currency_info.symbol}} {{all_total}}
                             </div>
                             <div class="onestepcheckout-place-order">
                                 <a @click="submitOrder()" class="large orange onestepcheckout-button" href="javascript:void(0)" id="onestepcheckout-place-order">
@@ -257,10 +223,13 @@ export default {
             submitOrderUrl: root + '/checkout/onepage/submitorder' ,
             getShippingAndCartInfoUrl: root + '/checkout/onepage/getshippingandcartinfo' ,
             errormsg:'',
+            bdmin_info: {},
             customerPasswordDisplay:'none',
             customer_password:'',
             confirm_password:'',
             isGuest:1,
+            all_count:0,
+            all_total:0,
             show_coupon: false,
             currency_info:{},
             shippings:'',
@@ -305,12 +274,25 @@ export default {
             self = this;
             self.errormsg = '';
             
+            var aData = {};
+            var ajaxData = {};
+            var cart_info = self.cart_info;
+            if (self.isObNotEmpty(cart_info)) {
+                for (var bdmin_user_id in cart_info) {
+                    var bdmin_cart = cart_info[bdmin_user_id];
+                    var shipping_method = bdmin_cart.shipping_method;
+                    aData[bdmin_user_id] = shipping_method;
+                }
+                ajaxData.shipping_method = aData;
+            }
+            
             var cookies = self.getTraceAllCookie();
-            var ajaxData = {
-                order_remark: self.order_remark,
-                shipping_method: self.shipping_method,
-                cookies: cookies
-            };
+            ajaxData.cookies = cookies;
+            //var ajaxData = {
+            //    order_remark: self.order_remark,
+            //    shipping_method: self.shipping_method,
+            //    cookies: cookies
+            //};
             $.showIndicator();
             self.displaySubmitOrder = 'block';
             $.ajax({
@@ -354,9 +336,14 @@ export default {
                 }
             });
         },
-        changeShipping: function(){
+        changeShipping: function(bdmin_user_id, shipMethodId){
             self = this;
-            self.getShippingAndCartInfo();
+            console.log("changeShipping");
+            console.log(bdmin_user_id);
+            console.log(self.cart_info[bdmin_user_id]);
+            console.log(self.cart_info[bdmin_user_id].shipping_method);
+            //self.getShippingAndCartInfo();
+            self.pageInit();
         },
         getShippingAndCartInfo: function(){
             console.log("getShippingAndCartInfo");
@@ -396,21 +383,40 @@ export default {
         routerGo: function(){
             this.$router.go(-1);
         },
+        isObNotEmpty: function(obj){
+            for(var key in obj) {
+            
+                return true;
+            }
+            
+            return false;
+        },
         
         pageInit: function(){
             var self = this;
             self.errormsg = '';
             self.correctmsg = '';
-
+            var cart_info = self.cart_info;
+            var aData = {};
+            var ajaxData = {};
+            if (self.isObNotEmpty(self.cart_info)) {
+                for (var bdmin_user_id in cart_info) {
+                    var bdmin_cart = cart_info[bdmin_user_id];
+                    var shipping_method = bdmin_cart.shipping_method;
+                    aData[bdmin_user_id] = shipping_method;
+                }
+                ajaxData.shipping_method = aData;
+            }
+            
+            
             $.showIndicator();
             $.ajax({
                 url: self.pageInitUrl,
                 async: true,
                 timeout: 120000,
-                type: 'get',
+                type: 'post',
                 headers: self.getRequestHeader(),
-                data:{ 
-                },
+                data:ajaxData,
                 success:function(reponseData, textStatus,request){
                     $.hideIndicator();
                     if(reponseData.code == 1100003){
@@ -421,16 +427,19 @@ export default {
                         self.isGuest = reponseData.data.isGuest;
                         
                         self.default_address_list = reponseData.data.default_address_list;
-                        self.shippings = reponseData.data.shippings;
+                        //self.shippings = reponseData.data.shippings;
                         self.currency_info = reponseData.data.currency_info;
-                        self.shipping_method = reponseData.data.current_shipping_method;
+                        self.bdmin_info = reponseData.data.bdmin_info;
+                        self.all_count = reponseData.data.all_count;
+                        self.all_total = reponseData.data.all_total;
+                        //self.shipping_method = reponseData.data.current_shipping_method;
                         self.show_coupon = reponseData.data.show_coupon;
                         self.cart_info = reponseData.data.cart_info;
-                        self.coupon_code = self.cart_info.coupon_code;
-                        if(self.coupon_code){
-                            self.couponType = 2;
-                            self.couponLabel = self.$i18n.t("message.cancel_coupon");
-                        }
+                        //self.coupon_code = self.cart_info.coupon_code;
+                        //if(self.coupon_code){
+                        //    self.couponType = 2;
+                        //    self.couponLabel = self.$i18n.t("message.cancel_coupon");
+                        //}
                         console.log('get editAccount info success');
                         var traceData = {"refer_url": self.refer_url};
                         var routerQ = self.$route.query
