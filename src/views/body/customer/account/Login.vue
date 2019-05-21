@@ -18,10 +18,10 @@
                 <ul>
                     <li>
                         <div class="item-content">
-                            <div class="item-media"><i class="icon icon-form-phone"></i></div>
+                            <div class="item-media"><i class="icon icon-form-email"></i></div>
                             <div class="item-inner">
                                 <div class="item-input">
-                                    <input v-model="phone" name="editForm[phone]" value="" id="phone" type="text" :placeholder="t_phone">
+                                    <input v-model="email" name="editForm[email]" value="" id="email" type="text" :placeholder="t_email">
                                 </div>
                             </div>
                         </div>
@@ -100,13 +100,14 @@ export default {
             googleLoginUrl:'',
             facebookLoginUrl:'',
             captchaFile:'',
-            phone:'',
+            email:'',
             captcha:'',
             password:'',
             errormsg:'',
             isLogin:false,
             refer_url: '',
             t_phone: '',
+            t_email: '',
             t_password: '',
             loginCaptchaActive:false  // 是否开启登录验证码
         }
@@ -114,6 +115,7 @@ export default {
     created: function(){
         this.pageInit();
         this.t_phone = this.$i18n.t("message.t_phone");
+        this.t_email = this.$i18n.t("message.t_e_mail");
         this.t_password = this.$i18n.t("message.t_password");
     },
     beforeRouteEnter (to, from, next) {
@@ -229,7 +231,7 @@ export default {
         },
         loginAccount: function(){
             var self = this;
-            var phone = self.phone;
+            var email = self.email;
             var password = self.password;
             var msgArr = [];
             self.errormsg = '';
@@ -239,8 +241,8 @@ export default {
                     msgArr.push(self.$i18n.t("message.captcha_cannot_blank"));
                 }
             }
-            if(!phone){
-                msgArr.push(self.$i18n.t("message.phone_cannot_blank"));
+            if(!email){
+                msgArr.push(self.$i18n.t("message.email_cannot_blank"));
             }
             if(!password){
                 msgArr.push(self.$i18n.t("message.password_cannot_blank"));
@@ -258,7 +260,7 @@ export default {
                 type: 'post',
                 headers: self.getRequestHeader(),
                 data:{ 
-                    phone: phone,
+                    email: email,
                     password: password,
                     captcha: captcha,
                     cookies: cookies

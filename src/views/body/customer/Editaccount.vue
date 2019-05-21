@@ -27,7 +27,19 @@
         <div class="list-block customer-login  customer-register">
             <div  id="form-validate" autocomplete="off" >
                 <ul>
-                    <li>
+                    <li v-if="phone">
+                        <div class="item-content">
+                            <div class="item-media">
+                                <i class="icon icon-form-name"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input v-model="phone" type="text" :placeholder="phone_address_str"  style="color:#ccc;" readonly="true" id="customer_phone" name="editForm[phone]"  title="Phone"  class="input-text required-entry" />
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li v-if="email">
                         <div class="item-content">
                             <div class="item-media">
                                 <i class="icon icon-form-name"></i>
@@ -140,6 +152,7 @@ export default {
             change_password_is_checked:false,
             change_password:false,
             email:'',
+            phone:'',
             firstname:'',
             lastname:'',
             current_password:'',
@@ -207,7 +220,7 @@ export default {
                 self.errormsg = 'firstname can not empty';
                 return;
             }
-            if(self.lastname == ''){
+            if(self.show_last_name && self.lastname == ''){
                 self.errormsg = 'lastname can not empty';
                 return;
             }
@@ -215,7 +228,7 @@ export default {
                 self.errormsg = 'The firstname must be greater than '+self.minNameLength + ', less than '+ self.maxNameLength;
                 return;
             }
-            if(self.lastname.length < self.minNameLength || self.lastname.length > self.maxNameLength){
+            if(self.show_last_name &&  (self.lastname.length < self.minNameLength || self.lastname.length > self.maxNameLength)){
                 self.errormsg = 'The lastname must be greater than '+self.minNameLength + ', less than ' + self.maxNameLength;
                 return;
             }
@@ -269,9 +282,12 @@ export default {
                     }else if(reponseData.code == 200){
                         //self.correctmsg = 'update account info success';
                         $.toast(self.$i18n.t("message.update_account_info_success"));
-                    }else if(reponseData.code == 401){
+                    }else if(reponseData.code == 401 || reponseData.code == 1100004){
+                        self.errormsg = reponseData.data.error;
+                    }else if (reponseData.data.error) {
                         self.errormsg = reponseData.data.error;
                     }
+                    
                     self.saveReponseHeader(request); 
                     
                 },
@@ -303,6 +319,7 @@ export default {
                     }else if(reponseData.code == 200){
                         //如果用户登录，则跳转到账户中心页面
                         self.email      = reponseData.data.email;
+                        self.phone      = reponseData.data.phone;
                         self.firstname  = reponseData.data.firstname;
                         self.lastname   = reponseData.data.lastname;
                         self.minNameLength = reponseData.data.minNameLength;

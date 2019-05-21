@@ -83,6 +83,7 @@ export default {
                     console.log('logout status'+reponseData.code);
                     if(reponseData.code == 200 || reponseData.code == 1100003){
                         console.log('logout success ,and begin redirect login page');
+                        self.$emit('update-cart-count', 0);
                         self.$router.push('/customer/account/login');
                         return;
                     }
