@@ -132,17 +132,18 @@
                                                     {{ $t("message.shipping_method") }}
                                                 </td>
                                                 <td class="value">
-                                                    <div>
+                                                    <div @click="showShippingList(bdmin_user_id)">
                                                         <span class="">
                                                             {{bdmin_cart_info.shipping_method_label}}
                                                         </span>
-                                                        <span class="icon icon-right" style="float:right;"></span>
-                                                        <span class="price" style="float:right;">
-                                                            
+                                                        <span  :class=" activeIndex == bdmin_user_id ? 'icon icon-down' : 'icon icon-right'" style="float:right;"></span>
+                                                        <span   class="price" style="float:right;margin-right:0.1rem">
+                                                            {{currency_info.symbol}}
                                                             {{bdmin_cart_info.shipping_cost}}
+                                                            
                                                         </span> 
-                                                    </div>
-                                                    <div>
+                                                    </div> 
+                                                    <div v-show="activeIndex == bdmin_user_id"  >
                                                         <div v-for="(shipMethod, index) in bdmin_cart_info.shipping_methods" class="shippingmethods">
                                                             <div>
                                                                 <input @change="changeShipping(bdmin_user_id, shipMethod.id)" v-model="bdmin_cart_info.shipping_method"  data-role="none"  type="radio" :id="'s_method_flatrate_flatrate'+shipMethod.id" :value="shipMethod.id" class="validate-one-required-by-name" :name=" 'shipping_method' + shipMethod.id ">
@@ -224,6 +225,7 @@ export default {
             getShippingAndCartInfoUrl: root + '/checkout/onepage/getshippingandcartinfo' ,
             errormsg:'',
             bdmin_info: {},
+            activeIndex: -1,
             customerPasswordDisplay:'none',
             customer_password:'',
             confirm_password:'',
@@ -435,6 +437,7 @@ export default {
                         //self.shipping_method = reponseData.data.current_shipping_method;
                         self.show_coupon = reponseData.data.show_coupon;
                         self.cart_info = reponseData.data.cart_info;
+                        self.activeIndex = -1;
                         //self.coupon_code = self.cart_info.coupon_code;
                         //if(self.coupon_code){
                         //    self.couponType = 2;
@@ -468,7 +471,10 @@ export default {
             });
             
         },
-        
+         
+        showShippingList(bdmin_user_id){
+            this.activeIndex = (this.activeIndex == bdmin_user_id) ? -1 : bdmin_user_id;
+        },                                                    
         addCoupon: function(){
             var self = this;
             var coupon_code = self.coupon_code;
