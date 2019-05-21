@@ -87,6 +87,7 @@ export default {
                     $.hideIndicator();
                     if(reponseData.code == 200){
                         self.increment_ids = reponseData.data.increment_ids;
+                        self.$emit('update-cart-count', reponseData.data.cart_qty);
                         self.orders = reponseData.data.orders;
                         var traceData = {"refer_url": self.refer_url};
                         var routerQ = self.$route.query

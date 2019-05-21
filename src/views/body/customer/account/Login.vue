@@ -268,6 +268,7 @@ export default {
                 success:function(reponseData, textStatus,request){
                     $.hideIndicator();
                     var code = reponseData.code;
+                    self.$emit('update-cart-count', reponseData.data.cart_qty);
                     if(code == 200){
                         console.log('account login success');
                         self.saveReponseHeader(request); 
