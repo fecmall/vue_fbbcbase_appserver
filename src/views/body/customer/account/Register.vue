@@ -13,6 +13,16 @@
                 </div>
             </div>
 		</div>
+        <div class="fecshop_message" v-if="correctmsg">
+            <div class="correct-msg">
+                <div>
+                    Your account registration is successful, we sent an email to your email, 
+                    you need to login to your email and click the activation link to activate your account. 
+                    If you have not received the email, you can resend the email by 
+                    <span style="cursor:pointer;font-weight:bold;" @click="resendRegisterEnableEmail()">clicking here</span>
+                   </div>
+            </div>
+		</div>
         <div class="list-block customer-login  customer-register">
             <div  id="register-form" class="account-form">
                 <ul>
@@ -103,6 +113,7 @@ export default {
             getCaptchaUrl: root + '/customer/site/captcha' ,
             pageInitUrl: root + '/customer/register/index' ,
             accountRegisterUrl: root + '/customer/register/account' ,
+            resendRegisterEnableEmailUrl: root + '/customer/register/resendregisteremail' ,
             firstname:'',
             lastname:'',
             email:'',
@@ -118,6 +129,7 @@ export default {
             minPassLength: 0,
             maxPassLength: 0,
             refer_url: '',
+            correctmsg:'',
             errormsg:'',
             t_captcha: '',
             t_confirm_password: '',
@@ -157,10 +169,12 @@ export default {
         registerAccount: function(){
             var self = this;
             var firstname = self.firstname;
+            var domain = 'http://' + window.location.host;  
             var lastname = self.lastname;
             var email = self.email;
             var phone = self.phone;
             var password = self.password;
+            self.correctmsg = '';
             var is_subscribed = self.is_subscribed;
             var confirmationPassword = self.confirmationPassword;
             var msgArr = [];
@@ -207,6 +221,7 @@ export default {
                 data:{ 
                     email:email,
                     phone:phone,
+                    domain:domain,
                     password: password,
                     firstname: firstname,
                     lastname: lastname,
@@ -232,6 +247,8 @@ export default {
                     }else if(code == 1100007){
                         var content = reponseData.data.error;
                         self.errormsg = content;
+                    }else if(code == 1100019){
+                        self.correctmsg = true;
                     }else{
                         self.errormsg = 'register account error';
                     }
@@ -323,6 +340,39 @@ export default {
                     $.hideIndicator();
                     console.log('get get Category info error');
                 }
+            });
+        
+        },
+        resendRegisterEnableEmail: function(){
+            var self = this;
+            $.showIndicator();
+            var email = self.email;
+            var domain = 'http://' + window.location.host;  
+            $.ajax({
+                async:true,
+                timeout: 6000,
+                dataType: 'json', 
+                type:'get',
+                headers: self.getRequestHeader(),
+                data: {
+                    "domain": domain,
+                    "email": email
+                },
+                url:self.resendRegisterEnableEmailUrl,
+                success:function(reponseData, textStatus,request){
+                    $.hideIndicator();
+                    if(reponseData.code == 200){
+                        $.toast("resend email success");
+                    } else {
+                        $.toast("resend email fail");
+                    }
+                    
+                },
+                error:function(){
+                    $.hideIndicator();
+                    console.log('error');
+                }
+                
             });
         
         }

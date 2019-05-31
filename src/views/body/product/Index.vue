@@ -348,7 +348,7 @@
             </router-link>
             </div>
                 
-            <div class="product_bottom_bar2" style="width:54%;display:inline-block">
+            <div class="product_bottom_bar2" style="width:53%;display:inline-block">
                 <a @click="OpenAddToCart('add-to-cart')" href="javascript:void(0)" class="open-about"  class="tab-item external add-to-cart" :class="isCartActive ? 'active' : ''  ">
                     {{ $t("message.add_to_cart") }}
                 </a>

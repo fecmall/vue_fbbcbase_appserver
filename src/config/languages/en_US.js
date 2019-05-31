@@ -8,6 +8,7 @@ const messagesEn = {
     filter: 'Filter',
     sort_by: 'Sort By',
     refine_by: 'Refine By',
+    register_enable:'Register Account Enable',
     price: 'Price',
     average_rating: 'Average rating',
     reviews: 'reviews',

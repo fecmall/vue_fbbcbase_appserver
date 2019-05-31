@@ -43,6 +43,7 @@ import appCustomerFacebookLoginVBody from '../views/body/customer/facebook/Login
 import appCustomerAccountForgotpasswordBody from '../views/body/customer/account/Forgotpassword.vue'
 import appCustomerAccountResetpasswordBody from '../views/body/customer/account/Resetpassword.vue'
 import appCustomerAccountForgotpasswordsubmitBody from '../views/body/customer/account/Forgotpasswordsubmit.vue'
+import appCustomerAccountRegisterEnableBody from '../views/body/customer/account/Registerenable.vue'
 
 import appCustomerAccountResetpasswordSuccessBody from '../views/body/customer/account/ResetpasswordSuccess.vue'
 import appCustomerAccountIndexBody from '../views/body/customer/account/Index.vue'
@@ -141,6 +142,16 @@ export default [
       footer: appFooter,
       //leftmenu: leftMenu,
       //leftaccount: leftAccount
+    }
+  },
+  {
+    path: '/customer/account/registerenable/:token',  // 注册页面
+    components: {
+      header: appHeader,
+      body: appCustomerAccountRegisterEnableBody,
+      footer: appFooter,
+      leftmenu: leftMenu,
+      leftaccount: leftAccount
     }
   },
   {

@@ -13,6 +13,16 @@
                 </div>
             </div>
 		</div>
+        <div class="fecshop_message" v-if="correctmsg">
+            <div class="correct-msg">
+                <div>
+                    Your account registration is successful, we sent an email to your email, 
+                    you need to login to your email and click the activation link to activate your account. 
+                    If you have not received the email, you can resend the email by 
+                    <span style="cursor:pointer;font-weight:bold;" @click="resendRegisterEnableEmail()">clicking here</span>
+                   </div>
+            </div>
+		</div>
         <div class="list-block customer-login">
             <div  id="login-form" class="account-form">
                 <ul>
@@ -97,12 +107,14 @@ export default {
             getCaptchaUrl: root + '/customer/site/captcha' ,
             pageInitUrl: root + '/customer/login/index' ,
             accountLoginUrl: root + '/customer/login/account' ,
+            resendRegisterEnableEmailUrl: root + '/customer/register/resendregisteremail' ,
             googleLoginUrl:'',
             facebookLoginUrl:'',
             captchaFile:'',
             email:'',
             captcha:'',
             password:'',
+            correctmsg: '',
             errormsg:'',
             isLogin:false,
             refer_url: '',
@@ -183,6 +195,39 @@ export default {
             });
             
         },
+        resendRegisterEnableEmail: function(){
+            var self = this;
+            $.showIndicator();
+            var email = self.email;
+            var domain = 'http://' + window.location.host;  
+            $.ajax({
+                async:true,
+                timeout: 6000,
+                dataType: 'json', 
+                type:'get',
+                headers: self.getRequestHeader(),
+                data: {
+                    "domain": domain,
+                    "email": email
+                },
+                url:self.resendRegisterEnableEmailUrl,
+                success:function(reponseData, textStatus,request){
+                    $.hideIndicator();
+                    if(reponseData.code == 200){
+                        $.toast("resend email success");
+                    } else {
+                        $.toast("resend email fail");
+                    }
+                    
+                },
+                error:function(){
+                    $.hideIndicator();
+                    console.log('error');
+                }
+                
+            });
+        
+        },
         googleLogin: function(){
             var self = this;
             var screenX     = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
@@ -229,10 +274,12 @@ export default {
             }
             return false;
         },
+        
         loginAccount: function(){
             var self = this;
             var email = self.email;
             var password = self.password;
+            self.correctmsg= '';
             var msgArr = [];
             self.errormsg = '';
             var captcha = self.captcha;
@@ -288,6 +335,9 @@ export default {
                         msgArr.push(self.$i18n.t("message.captcha_is_not_right"));
                     }else if(code == 1100002){
                         msgArr.push(self.$i18n.t("message.phone_or_password_is_not_right"));
+                    }else if(code == 1100019){
+                        self.correctmsg = true;
+                        console.log('1100019');
                     }else{
                         msgArr.push(self.$i18n.t("message.login_error"));
                     }

@@ -9,6 +9,7 @@ const messagesZh = {
     filter: '过滤',
     sort_by: '排序',
     refine_by: '过滤选项',
+    register_enable:'注册账户激活',
     price: '价格',
     average_rating: '平均评分',
     reviews: '评论',
